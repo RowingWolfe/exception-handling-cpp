@@ -1,9 +1,15 @@
 #include <iostream>
 #include <string>
+#include <exception>
 
 //Oh HELL no!
 //using namespace std;
 
+
+//While I COULD use std::runtime_error here I opted to write my own error handling just to
+//Make sure I understand how it all works.
+
+//In fact there's a lot of ways I could do this... https://en.cppreference.com/w/cpp/error/exception
 
 //Let's use an exception class instead of a char const*
 //You can also derive other forms of exceptions from this very exception.
@@ -12,7 +18,7 @@
 //Catch Derived types before Base.
 //I didn't ented this to be so long or I would have used a /**/ ... fuck. I could just change it but
 //Then I couldn't shame myself for failure to think ahead and where would the fun be in that?
-class MrException{
+class MrException : public std::exception{
 private:
     std::string m_err;
 public:
@@ -23,9 +29,13 @@ public:
 
     //Return the err as a c string.
     const char* getError() const { return m_err.c_str(); }
+    //Using the built in exception handling from std::exception would look more like this...
+    //And it's a better way of doing things.
+    //But I'm just fucking around here.
+    const char* what() const noexcept { return m_err.c_str(); }
 };
 
-//Check for me first.
+//Inheritor of MrException. To prove a point.
 class ExceptionJr : public MrException{
 
 public:
@@ -73,6 +83,10 @@ int main()
     catch(const MrException &err){
         //Now we handle with our own data types and member functions. Much more power.
         std::cerr << "ERR: " << err.getError() << '\n';
+    }
+    catch(const std::exception &err){
+        //A catch all for derived types based on std::exception.
+        std::cerr << "An exception derived from std::exception has been thrown: " << err.what() << '\n';
     }
     catch(...){ //Catch all, for errors of unknown type. Often used to wrap main's code entirely which I guess I am mostly doing.
         std::cerr << "Well, I guess I didn't see that coming. You broke it in a way I did not expect. Good job. \n" <<
