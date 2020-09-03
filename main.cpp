@@ -13,6 +13,8 @@ T sum(T x, T y){
 
 int main()
 {
+    //Can use std::endl but I am a fan of the old C way and as far as I can tell it doesn't make much difference nowadays.
+    //Correct me if I'm wrong though.
     std::cout << "Yo, Dickhead!" << '\n';
 
     //Some error handling stuff because it's important.
